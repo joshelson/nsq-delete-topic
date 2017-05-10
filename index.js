@@ -10,10 +10,9 @@ var debug = require('debug')('nsq-delete-topic');
  * it will go find all of the nsqd servers and delete from there.
  */
 
-module.exports = deleteTopic;
-module.exports = emptyTopic;
+module.exports = manageTopic;
 
-function emptyTopic(nsqlookupd, topic, callback) {
+manageTopic.prototype.emptyTopic = function emptyTopic(nsqlookupd, topic, callback) {
   lookup(nsqlookupd, function(err, nodes){
     var batch = new Batch();
     if (err) {
@@ -54,7 +53,7 @@ function emptyTopic(nsqlookupd, topic, callback) {
 
 }
 
-function deleteTopic(nsqlookupd, topic, fn){
+manageTopic.prototype.deleteTopic = function deleteTopic(nsqlookupd, topic, fn){
   var batch = new Batch();
 
   if ('string' === typeof(nsqlookupd)) {
