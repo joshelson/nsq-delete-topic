@@ -1,6 +1,6 @@
 {
   "name": "nsq-delete-topic",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "Delete a nsq topic and all its channels and messages",
   "repository": "segmentio/nsq-delete-topic",
   "license": "MIT",
@@ -9,8 +9,8 @@
   },
   "dependencies": {
     "batch": "^0.5.0",
-    "nsq-lookup": "0.0.1",
-    "superagent": "^0.17.0"
+    "nsq-lookup": "3.0.0",
+    "superagent": "^3.5.2"
   },
   "devDependencies": {
     "mocha": "^2.0.1",
