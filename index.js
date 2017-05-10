@@ -11,6 +11,48 @@ var debug = require('debug')('nsq-delete-topic');
  */
 
 module.exports = deleteTopic;
+module.exports = emptyTopic;
+
+function emptyTopic(nsqlookupd, topic, callback) {
+  lookup(nsqlookupd, function(err, nodes){
+    var batch = new Batch();
+    if (err) {
+      debug('lookup error', err);
+      return callback(err);
+    }
+
+    nodes
+      .map(function(node){
+        // loop through all of our nodes that contain this topic
+        // and call the delete on each of them.
+        debug('found nsdq node', node.broadcast_address, node.http_port);
+        batch.push(function(done){
+          var myNode = node.broadcast_address + ':' + node.http_port;
+
+          debug('processing nsqd node', myNode, topic);
+          request
+            .post(myNode +
+              '/topic/empty?topic=' + topic)
+            .end(function(err, res){
+              debug('nsqd request complete', myNode, topic);
+              if (err) {
+                debug('error emptying from nsqd', myNode, err);
+                return done(err);
+              }
+              if (res.error) {
+                debug('error returned from nsqd', myNode, res.error);
+                return done(res.error);
+              }
+              debug('nsqd node completed', myNode, topic, res.status);
+              done();
+            });
+        });
+      });
+
+    batch.end(callback);
+  });
+
+}
 
 function deleteTopic(nsqlookupd, topic, fn){
   var batch = new Batch();
