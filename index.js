@@ -10,9 +10,9 @@ var debug = require('debug')('nsq-delete-topic');
  * it will go find all of the nsqd servers and delete from there.
  */
 
-module.exports = manageTopic;
+var manageTopic = function() {};
 
-manageTopic.prototype.emptyTopic = function emptyTopic(nsqlookupd, topic, callback) {
+manageTopic.emptyTopic = function emptyTopic(nsqlookupd, topic, callback) {
   lookup(nsqlookupd, function(err, nodes){
     var batch = new Batch();
     if (err) {
@@ -51,9 +51,9 @@ manageTopic.prototype.emptyTopic = function emptyTopic(nsqlookupd, topic, callba
     batch.end(callback);
   });
 
-}
+};
 
-manageTopic.prototype.deleteTopic = function deleteTopic(nsqlookupd, topic, fn){
+manageTopic.deleteTopic = function deleteTopic(nsqlookupd, topic, fn){
   var batch = new Batch();
 
   if ('string' === typeof(nsqlookupd)) {
@@ -89,7 +89,7 @@ manageTopic.prototype.deleteTopic = function deleteTopic(nsqlookupd, topic, fn){
     debug('lookupd complete, starting nsqd');
     deleteOnNsqd(nsqlookupd, topic, fn);
   });
-}
+};
 
 function deleteOnNsqd(nsqlookupd, topic, callback) {
   lookup(nsqlookupd, function(err, nodes){
@@ -142,3 +142,5 @@ function hasTopic(topic){
     return node.topics.indexOf(topic) > -1;
   };
 }
+
+module.exports = manageTopic;
